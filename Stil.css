@@ -10,9 +10,9 @@ body{
 
 .container{
     background: rgba(255,255,255,0.3);
-    padding: 20px;
+    padding: 380px;
     box-shadow: 0 4px 10px rgba(0,0,0,.3);
-    border-radius: 10px;
+    border-radius: 40px;
     width: 85%;
     max-width: 450px;
 }
@@ -21,7 +21,15 @@ body{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     
 }
+ #kalkulatorknapp{
+    background-color: aqua;
+    border-color: white;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 30px;
+ }
