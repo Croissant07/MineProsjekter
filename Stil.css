@@ -7,6 +7,7 @@ body{
     color:darkcyan;
     font-size: x-large;
     font-family: arial;
+    align-items: baseline;
 }
 
 .header{
@@ -103,9 +104,7 @@ button:hover {
     border-radius: 100px;
 }
 
-#CalulatorICON{
+#ICON{
     width: 70px;
-}
-#TicTacToeICON{
-    width: 60px;
+    border-radius: 20%;
 }
