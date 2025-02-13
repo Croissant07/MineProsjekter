@@ -1,20 +1,36 @@
 body{
-    background-image: linear-gradient(to bottom left, wheat, lightblue, white);
+    background-image: linear-gradient(to top right, darkblue, lightblue , white, wheat);
     height: 100vh;
-    font-family: Arial, sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
     color:darkcyan;
+    font-size: x-large;
+    font-family: arial;
+}
+
+.header{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 100px;    
+}
+
+h1{
+    color: grey;
 }
 
 .container{
-    background: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.5);
     padding: 380px;
-    box-shadow: 0 4px 10px rgba(0,0,0,.3);
+    box-shadow: 7px 6px 100px 10px rgba(0,0,0,.3);
     border-radius: 40px;
     width: 85%;
-    max-width: 450px;
+    max-width: 250px;
+    max-height: 250px;
+    grid-template-columns: auto auto auto;
+    display: grid;
 }
 
 .container-items{
@@ -25,11 +41,71 @@ body{
     font-weight: 700;
     
 }
- #kalkulatorknapp{
+
+a{
+    text-decoration: none;
+    color: darkcyan;
+}
+
+ .calculator {
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+.display {
+    width: 100%;
+    height: 50px;
+    font-size: 1.5em;
+    text-align: right;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    background: #333;
+    color: white;
+    border-radius: 5px;
+}
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+button {
+    width: 60px;
+    height: 60px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #444;
+    color: white;
+    transition: 0.3s;
+}
+button:hover {
+    background: #666;
+}
+.equal {
+    background: #ff9500;
+}
+.equal:hover {
+    background: #e08900;
+}
+
+#backButton{
     background-color: aqua;
     border-color: white;
     justify-content: center;
     align-items: center;
-    width: 70px;
+    width: 40px;
     height: 30px;
- }
+    font-size: large;
+    border-radius: 100px;
+}
+
+#CalulatorICON{
+    width: 70px;
+}
+#TicTacToeICON{
+    width: 60px;
+}
