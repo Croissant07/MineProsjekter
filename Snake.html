@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="Snake.css">
+</head>
+<body>
+
+    
+
+    <div class="information">
+        <div class="information-items">
+            <h3>Snake</h3>
+            <p>React, Html/CSS, JavaScript</p>
+            <canvas id="gameCanvas"></canvas>
+            <button id="restartButton">Restart Game</button>
+            <form>
+                <input id="backButton" type="button" value="↩" onclick="history.back()">
+               </form>        
+        </div>
+    </div>
+        
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const boxSize = 30;
+        const canvasSize = 450; // Smaller map
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
+
+        let snake = [
+            { x: 150, y: 150 },
+            { x: 120, y: 150 },
+            { x: 90, y: 150 },
+            { x: 60, y: 150 }
+        ];
+        let direction = "RIGHT";
+        let nextDirection = "RIGHT";
+        let fruits = generateFruits(5); // 5 fruits initially
+        let gameRunning = true;
+        let gameSpeed = 150;
+        let lastUpdateTime = 0;
+
+        document.addEventListener("keydown", changeDirection);
+        document.getElementById("restartButton").addEventListener("click", restartGame);
+
+        function changeDirection(event) {
+            const key = event.key.toLowerCase();
+            if (key === "w" && direction !== "DOWN") nextDirection = "UP";
+            else if (key === "s" && direction !== "UP") nextDirection = "DOWN";
+            else if (key === "a" && direction !== "RIGHT") nextDirection = "LEFT";
+            else if (key === "d" && direction !== "LEFT") nextDirection = "RIGHT";
+            else if (key === "f") restartGame();
+        }
+
+        function generateFruits(count) {
+            let newFruits = [];
+            for (let i = 0; i < count; i++) {
+                newFruits.push(generateFruit());
+            }
+            return newFruits;
+        }
+
+        function generateFruit() {
+            let fruit;
+            do {
+                fruit = {
+                    x: Math.floor(Math.random() * (canvasSize / boxSize)) * boxSize,
+                    y: Math.floor(Math.random() * (canvasSize / boxSize)) * boxSize
+                };
+            } while (snake.some(segment => segment.x === fruit.x && segment.y === fruit.y));
+            return fruit;
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+
+            direction = nextDirection;
+
+            let head = { ...snake[0] };
+
+            if (direction === "UP") head.y -= boxSize;
+            if (direction === "DOWN") head.y += boxSize;
+            if (direction === "LEFT") head.x -= boxSize;
+            if (direction === "RIGHT") head.x += boxSize;
+
+            if (head.x < 0 || head.y < 0 || head.x >= canvasSize || head.y >= canvasSize || 
+                snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                gameRunning = false;
+                return;
+            }
+
+            snake.unshift(head);
+
+            let ateFruit = false;
+            for (let i = 0; i < fruits.length; i++) {
+                if (head.x === fruits[i].x && head.y === fruits[i].y) {
+                    fruits[i] = generateFruit(); // Respawn fruit at new location
+                    ateFruit = true;
+                    break;
+                }
+            }
+
+            if (!ateFruit) {
+                snake.pop();
+            }
+        }
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let row = 0; row < canvasSize / boxSize; row++) {
+                for (let col = 0; col < canvasSize / boxSize; col++) {
+                    ctx.fillStyle = (row + col) % 2 === 0 ? "#282828" : "#333";
+                    ctx.fillRect(col * boxSize, row * boxSize, boxSize, boxSize);
+                }
+            }
+
+            // Draw fruits
+            fruits.forEach(fruit => {
+                let gradient = ctx.createRadialGradient(fruit.x + 15, fruit.y + 15, 2, fruit.x + 15, fruit.y + 15, 14);
+                gradient.addColorStop(0, "red");
+                gradient.addColorStop(1, "darkred");
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(fruit.x + 15, fruit.y + 15, boxSize / 2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Draw snake
+            ctx.fillStyle = "lime";
+            snake.forEach((segment, index) => {
+                ctx.beginPath();
+                ctx.arc(segment.x + 15, segment.y + 15, boxSize / 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (index === 0) {
+                    drawSnakeHead(segment);
+                }
+            });
+        }
+
+        function drawSnakeHead(segment) {
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(segment.x + 10, segment.y + 10, 3, 0, Math.PI * 2);
+            ctx.arc(segment.x + 20, segment.y + 10, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(segment.x + 10, segment.y + 10, 1.5, 0, Math.PI * 2);
+            ctx.arc(segment.x + 20, segment.y + 10, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(segment.x + 15, segment.y + 25);
+            ctx.lineTo(segment.x + 15, segment.y + 35);
+            ctx.stroke();
+        }
+
+        function gameLoop(timestamp) {
+            if (!gameRunning) return;
+
+            if (timestamp - lastUpdateTime > gameSpeed) {
+                updateGame();
+                drawGame();
+                lastUpdateTime = timestamp;
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            gameRunning = true;
+            direction = "RIGHT";
+            nextDirection = "RIGHT";
+            snake = [
+                { x: 150, y: 150 },
+                { x: 120, y: 150 },
+                { x: 90, y: 150 },
+                { x: 60, y: 150 }
+            ];
+            fruits = generateFruits(5); // Start with 5 fruits
+            lastUpdateTime = 0;
+            requestAnimationFrame(gameLoop);
+        }
+
+        function restartGame() {
+            gameRunning = false;
+            setTimeout(startGame, 200);
+        }
+
+        startGame();
+    </script>
+
+
+</div>
+</body>
+</html>
