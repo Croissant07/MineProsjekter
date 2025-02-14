@@ -1,22 +1,85 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
     <link rel="stylesheet" href="Stil.css">
-  </head>
 
-  <body>
+</head>
 
+<body>
+    <div id="status"></div>
     <form>
         <input id="backButton" type="button" value="↩" onclick="history.back()">
-       </form>
+    </form>
+    <div class="board" id="board"></div>
+    
+    <script>
+        const board = document.getElementById("board");
+        const status = document.getElementById("status");
+        let currentPlayer = "X";
+        let gameBoard = ["", "", "", "", "", "", "", "", ""];
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
 
-    <div class="container">
-      
+        function checkWinner() {
+            for (let pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+                    status.textContent = `Player ${gameBoard[a]} Wins!`;
+                    document.querySelectorAll(".cell").forEach(cell => cell.classList.add("taken"));
+                    return true;
+                }
+            }
+            if (!gameBoard.includes("")) {
+                status.textContent = "It's a draw!";
+                return true;
+            }
+            return false;
+        }
+
+        function handleClick(index, cell) {
+            if (!gameBoard[index] && !checkWinner()) {
+                gameBoard[index] = currentPlayer;
+                cell.textContent = currentPlayer;
+                cell.classList.add("taken");
+                if (!checkWinner()) {
+                    currentPlayer = currentPlayer === "X" ? "O" : "X";
+                }
+            }
+        }
+
+        function resetGame() {
+            gameBoard = ["", "", "", "", "", "", "", "", ""];
+            currentPlayer = "X";
+            status.textContent = "";
+            board.innerHTML = "";
+            createBoard();
+        }
+
+        function createBoard() {
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+                cell.addEventListener("click", () => handleClick(i, cell));
+                board.appendChild(cell);
+            }
+        }
+
+        createBoard();
+    </script>
+
+    <div class="information">
+        <div class="information-items">
+            <h3>Tic Tac Toe</h3>
+            <p>React, Html/CSS, JavaScript</p>
+            <button id="resetGame" onclick="resetGame()">Reset</button>
+        </div>
     </div>
-
-  </body>
+</body>
 </html>
+
